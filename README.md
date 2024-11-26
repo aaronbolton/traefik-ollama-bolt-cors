@@ -1,5 +1,7 @@
 # This is provided as an example only, many options will need changing to suit your enviroment
 
+# this is heavly AI generated document please excuse any mistake
+
 ### Docker Compose Stack 
 
 * Traefik
@@ -52,3 +54,33 @@ Here's what's happening in detail:
 6. ollama.yourdomain.com responds with the data and required CORS headers
 
 To make this work, you need to configure ollama.yourdomain.com to allow requests from bolt.yourdomain.com. on the Ollama container you will need to define this as an enviroment var OLLAMA_ORIGINS
+
+A more solution specific diagram
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Traefik
+    participant Bolt.new
+    participant Ollama
+
+    User->>Browser: Access https://bolt.yourdomain.com
+    Browser->>Traefik: Request to bolt.yourdomain.com
+    Traefik->>Bolt.new: Forward request (port 5173)
+    Bolt.new->>Browser: Send frontend app
+
+    Note over Browser,Ollama: CORS Request Flow
+    Browser->>Traefik: Preflight OPTIONS request to ollama.yourdomain.com
+    Traefik->>Ollama: Forward OPTIONS request (port 11434)
+    Ollama-->>Traefik: Response with CORS headers<br/>(OLLAMA_ORIGINS=*)
+    Traefik-->>Browser: Forward CORS headers
+
+    Browser->>Traefik: API request to ollama.yourdomain.com
+    Traefik->>Ollama: Forward API request
+    Ollama-->>Traefik: API response
+    Traefik-->>Browser: Forward response
+    Browser-->>User: Display results
+
+    Note right of Ollama: OLLAMA_ORIGINS=*<br/>allows requests from<br/>bolt.yourdomain.com
+```
