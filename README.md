@@ -4,7 +4,7 @@
 
 * Traefik
 * Ollama
-* Bolt.new
+* Bolt.new (this has been built and push to a container registry)
 
 All connected to the same docker network called (proxy) see the exmaple docker-compose.yml as an example
 
